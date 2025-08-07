@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"   # Main LocalStack API endpoint
+      - "4571:4571"   # Edge port (used for some services)
+    environment:
+      - SERVICES=s3, iam, sts
+      - DEBUG=1
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  localstack_data:

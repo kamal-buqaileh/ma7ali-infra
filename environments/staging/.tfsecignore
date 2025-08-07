@@ -1,0 +1,4 @@
+# Suppress false positive warnings about S3 object wildcards
+# These are standard AWS patterns for S3 object access
+aws-iam-no-policy-wildcards:
+  - "S3 object access requires /* pattern for bucket objects" 

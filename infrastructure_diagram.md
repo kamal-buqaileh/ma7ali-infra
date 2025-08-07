@@ -182,13 +182,13 @@ graph TB
     CW_DEV --> CW_DEV_POLICY
     CW_VIEWER --> CW_VIEWER_POLICY
     
-    %% Styling
-    classDef vpcStyle fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    classDef subnetStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef storageStyle fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    classDef iamStyle fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef securityStyle fill:#fce4ec,stroke:#880e4f,stroke-width:2px
-    classDef monitoringStyle fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    %% Styling with larger fonts
+    classDef vpcStyle fill:#e1f5fe,stroke:#01579b,stroke-width:6px,font-size:18px,color:#123433
+    classDef subnetStyle fill:#f3e5f5,stroke:#4a148c,stroke-width:6px,font-size:18px,color:#123433
+    classDef storageStyle fill:#e8f5e8,stroke:#1b5e20,stroke-width:6px,font-size:18px,color:#123433
+    classDef iamStyle fill:#fff3e0,stroke:#e65100,stroke-width:6px,font-size:18px,color:#123433
+    classDef securityStyle fill:#fce4ec,stroke:#880e4f,stroke-width:6px,font-size:18px,color:#123433
+    classDef monitoringStyle fill:#f1f8e9,stroke:#33691e,stroke-width:6px,font-size:18px,color:#000
     
     class VPC,IGW,FLOW vpcStyle
     class PUB1,PUB2,PRIV1,PRIV2,DB1,DB2 subnetStyle
@@ -242,6 +242,10 @@ graph LR
     
     CW_MON --> LOGS
     LOGS --> ALERTS
+    
+    %% Styling with larger fonts
+    classDef defaultStyle fill:#f9f9f9,stroke:#333,stroke-width:2px,font-size:16px,color:#000
+    class VPC,SUBNETS,FLOW_LOGS,IAM,POLICIES,GROUPS,KMS,S3_SEC,VERSIONING,CW_MON,LOGS,ALERTS defaultStyle
 ```
 
 ## 🏗️ Module Architecture
@@ -292,6 +296,13 @@ graph TB
     STAGING --> MAIN_TF
     MAIN_TF --> VARIABLES
     MAIN_TF --> OUTPUTS
+    
+    %% Styling with larger fonts
+    classDef moduleStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,font-size:16px,color:#000
+    classDef configStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,font-size:16px,color:#000
+    
+    class VPC_MODULE,SUBNETS_MODULE,GATEWAYS_MODULE,S3_MODULE,KMS_MODULE,IAM_GROUPS_MODULE,IAM_POLICIES_MODULE,IAM_USERS_MODULE,CW_MODULE moduleStyle
+    class STAGING,MAIN_TF,VARIABLES,OUTPUTS configStyle
 ```
 
 ## 📊 Key Features Summary
@@ -323,4 +334,4 @@ graph TB
 - **Database Hosting**: Private subnets for RDS instances
 - **Container Orchestration**: Private subnets for EKS clusters
 - **Load Balancing**: Public subnets for ALBs
-- **Development**: LocalStack integration for local development 
+- **Development**: LocalStack integration for local development

@@ -49,37 +49,37 @@ graph TB
         
         %% Storage Layer
         subgraph "Storage & Encryption"
-            S3[S3 Bucket<br/>ma7ali-staging-{random}<br/>✅ Versioning Enabled<br/>✅ KMS Encrypted<br/>✅ Access Logging<br/>✅ Public Access Blocked]
+            S3[S3 Bucket<br/>ma7ali-staging-random<br/>Versioning Enabled<br/>KMS Encrypted<br/>Access Logging<br/>Public Access Blocked]
             
             subgraph "KMS Keys"
-                KMS_MAIN[Main KMS Key<br/>alias/main-key-staging<br/>✅ Key Rotation<br/>✅ Proper Policies]
-                KMS_S3[S3 KMS Key<br/>S3 Encryption<br/>✅ Dedicated Key]
+                KMS_MAIN[Main KMS Key<br/>alias/main-key-staging<br/>Key Rotation<br/>Proper Policies]
+                KMS_S3[S3 KMS Key<br/>S3 Encryption<br/>Dedicated Key]
             end
         end
         
         %% IAM Security Layer
         subgraph "IAM Security (MFA Enforced)"
             subgraph "IAM Groups"
-                ADMIN_GROUP[Admin Group<br/>✅ MFA Required<br/>Full Access]
-                DEV_GROUP[Developer Group<br/>✅ MFA Required<br/>Read/Write Access]
-                VIEWER_GROUP[Viewer Group<br/>✅ MFA Required<br/>Read-Only Access]
+                ADMIN_GROUP[Admin Group<br/>MFA Required<br/>Full Access]
+                DEV_GROUP[Developer Group<br/>MFA Required<br/>Read/Write Access]
+                VIEWER_GROUP[Viewer Group<br/>MFA Required<br/>Read-Only Access]
                 
                 subgraph "Service-Specific Groups"
-                    S3_ADMIN[S3 Admin Group<br/>✅ MFA Required]
-                    S3_DEV[S3 Developer Group<br/>✅ MFA Required]
-                    S3_VIEWER[S3 Viewer Group<br/>✅ MFA Required]
+                    S3_ADMIN[S3 Admin Group<br/>MFA Required]
+                    S3_DEV[S3 Developer Group<br/>MFA Required]
+                    S3_VIEWER[S3 Viewer Group<br/>MFA Required]
                     
-                    KMS_ADMIN[KMS Admin Group<br/>✅ MFA Required]
-                    KMS_DEV[KMS Developer Group<br/>✅ MFA Required]
-                    KMS_VIEWER[KMS Viewer Group<br/>✅ MFA Required]
+                    KMS_ADMIN[KMS Admin Group<br/>MFA Required]
+                    KMS_DEV[KMS Developer Group<br/>MFA Required]
+                    KMS_VIEWER[KMS Viewer Group<br/>MFA Required]
                     
-                    VPC_ADMIN[VPC Admin Group<br/>✅ MFA Required]
-                    VPC_DEV[VPC Developer Group<br/>✅ MFA Required]
-                    VPC_VIEWER[VPC Viewer Group<br/>✅ MFA Required]
+                    VPC_ADMIN[VPC Admin Group<br/>MFA Required]
+                    VPC_DEV[VPC Developer Group<br/>MFA Required]
+                    VPC_VIEWER[VPC Viewer Group<br/>MFA Required]
                     
-                    CW_ADMIN[CloudWatch Admin Group<br/>✅ MFA Required]
-                    CW_DEV[CloudWatch Developer Group<br/>✅ MFA Required]
-                    CW_VIEWER[CloudWatch Viewer Group<br/>✅ MFA Required]
+                    CW_ADMIN[CloudWatch Admin Group<br/>MFA Required]
+                    CW_DEV[CloudWatch Developer Group<br/>MFA Required]
+                    CW_VIEWER[CloudWatch Viewer Group<br/>MFA Required]
                 end
             end
             
@@ -110,7 +110,7 @@ graph TB
         
         %% Monitoring & Logging
         subgraph "Monitoring & Logging"
-            CW_LOGS[CloudWatch Log Groups<br/>✅ KMS Encrypted<br/>✅ Retention Policies]
+            CW_LOGS[CloudWatch Log Groups<br/>KMS Encrypted<br/>Retention Policies]
             
             subgraph "Log Groups"
                 APP_LOGS[Application Logs<br/>/aws/application/ma7ali-staging]
@@ -120,7 +120,7 @@ graph TB
         
         %% Security & Compliance
         subgraph "Security & Compliance"
-            SECURITY[Security Features<br/>✅ MFA Enforcement<br/>✅ Granular IAM Policies<br/>✅ KMS Encryption<br/>✅ VPC Flow Logs<br/>✅ S3 Versioning<br/>✅ Access Logging]
+            SECURITY[Security Features<br/>MFA Enforcement<br/>Granular IAM Policies<br/>KMS Encryption<br/>VPC Flow Logs<br/>S3 Versioning<br/>Access Logging]
         end
     end
     

@@ -29,3 +29,9 @@ variable "s3_lifecycle_rules" {
   }))
   default = []
 }
+
+variable "enable_vpc_flow_logs" {
+  description = "Whether to enable VPC flow logs"
+  type        = bool
+  default     = true
+}

@@ -19,8 +19,7 @@ module "developer_user" {
   user_name = "developer"
   path      = "/"
   group_names = [
-    module.s3_developer_group.group_name,
-    module.kms_developer_group.group_name
+    module.developer_group.group_name
   ]
 
   tags = {

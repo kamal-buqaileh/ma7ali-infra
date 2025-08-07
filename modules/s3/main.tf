@@ -14,31 +14,10 @@ resource "aws_s3_bucket_acl" "this" {
   acl    = var.acl
 }
 
-# Enable versioning only in production environments for data protection and compliance
-# 
-# WHY CONDITIONAL VERSIONING?
-# ===========================
-# 1. COST OPTIMIZATION: Versioning doubles storage costs as every version is stored
-#    - Staging/dev environments don't need the same level of data protection
-#    - Reduces unnecessary costs for development and testing environments
-#
-# 2. PERFORMANCE: Versioning adds overhead to S3 operations
-#    - Faster operations in staging/dev environments for quicker development cycles
-#    - Production environments prioritize data protection over speed
-#
-# 3. ENVIRONMENT SEPARATION: Different environments have different requirements
-#    - Production: Data protection, compliance, and recovery capabilities
-#    - Staging/Dev: Cost efficiency, speed, and development flexibility
-#
-# 4. SECURITY STRATEGY: We focus on prevention rather than recovery in non-prod
-#    - Staging environments are typically recreated frequently
-#    - Development data is not business-critical and can be regenerated
-#
-# NOTE: This approach may trigger tfsec warnings (aws-s3-enable-versioning)
-#       which are suppressed in .tfsecignore for staging environments.
-#
+# Enable versioning based on the enable_versioning variable
+# This allows for flexible versioning configuration across environments
 resource "aws_s3_bucket_versioning" "this" {
-  count  = var.environment == "production" ? 1 : 0
+  count  = var.enable_versioning ? 1 : 0
   bucket = aws_s3_bucket.this.id
 
   versioning_configuration {

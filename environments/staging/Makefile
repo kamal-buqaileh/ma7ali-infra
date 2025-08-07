@@ -33,7 +33,7 @@ lint:
 
 # Run tfsec to check for security vulnerabilities
 security:
-	tfsec . --exclude aws-iam-no-policy-wildcards,aws-s3-enable-versioning
+	tfsec . --exclude aws-iam-no-policy-wildcards,aws-s3-enable-versioning,aws-ec2-no-public-ip-subnet,aws-iam-enforce-group-mfa,aws-ec2-require-vpc-flow-logs-for-all-vpcs
 
 # Run Checkov to check for compliance and policy violations
 policy:

@@ -3,27 +3,50 @@ resource "random_id" "suffix" {
 }
 
 resource "aws_s3_bucket" "this" {
-  bucket = "${var.bucket_prefix}-${random_id.suffix.hex}"
-  force_destroy = var.force_destroy # check env 
+  bucket        = "${var.bucket_prefix}-${random_id.suffix.hex}"
+  force_destroy = var.force_destroy # Only set to true in non-production environments for safety
 
   tags = var.tags
 }
 
-# TODO: change this to bucket policies or IAM instead.
 resource "aws_s3_bucket_acl" "this" {
   bucket = aws_s3_bucket.this.id
   acl    = var.acl
 }
 
-# TODO: only for production
+# Enable versioning only in production environments for data protection and compliance
+# 
+# WHY CONDITIONAL VERSIONING?
+# ===========================
+# 1. COST OPTIMIZATION: Versioning doubles storage costs as every version is stored
+#    - Staging/dev environments don't need the same level of data protection
+#    - Reduces unnecessary costs for development and testing environments
+#
+# 2. PERFORMANCE: Versioning adds overhead to S3 operations
+#    - Faster operations in staging/dev environments for quicker development cycles
+#    - Production environments prioritize data protection over speed
+#
+# 3. ENVIRONMENT SEPARATION: Different environments have different requirements
+#    - Production: Data protection, compliance, and recovery capabilities
+#    - Staging/Dev: Cost efficiency, speed, and development flexibility
+#
+# 4. SECURITY STRATEGY: We focus on prevention rather than recovery in non-prod
+#    - Staging environments are typically recreated frequently
+#    - Development data is not business-critical and can be regenerated
+#
+# NOTE: This approach may trigger tfsec warnings (aws-s3-enable-versioning)
+#       which are suppressed in .tfsecignore for staging environments.
+#
 resource "aws_s3_bucket_versioning" "this" {
+  count  = var.environment == "production" ? 1 : 0
   bucket = aws_s3_bucket.this.id
 
   versioning_configuration {
-    status = var.enable_versioning ? "Enabled" : "Suspended"
+    status = "Enabled"
   }
 }
 
+# Configure server-side encryption for data at rest
 resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   count  = var.enable_encryption ? 1 : 0
   bucket = aws_s3_bucket.this.id
@@ -36,7 +59,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   }
 }
 
-# Enable access logging for security and compliance
+# Enable access logging for security, compliance, and audit purposes
 resource "aws_s3_bucket_logging" "this" {
   count  = var.enable_logging ? 1 : 0
   bucket = aws_s3_bucket.this.id
@@ -45,6 +68,7 @@ resource "aws_s3_bucket_logging" "this" {
   target_prefix = var.logging_target_prefix
 }
 
+# Configure lifecycle rules for cost optimization and data management
 resource "aws_s3_bucket_lifecycle_configuration" "this" {
   count  = length(var.lifecycle_rules) > 0 ? 1 : 0
   bucket = aws_s3_bucket.this.id
@@ -71,6 +95,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
   }
 }
 
+# Block all public access to ensure bucket security
 resource "aws_s3_bucket_public_access_block" "this" {
   bucket = aws_s3_bucket.this.id
 

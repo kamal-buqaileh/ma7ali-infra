@@ -5,6 +5,8 @@ module "s3_admin_policy" {
   source      = "../../modules/iam_policies"
   name        = "s3-admin-policy"
   description = "Full access to S3"
+  path        = "/"
+
   policy_document = {
     Version = "2012-10-17"
     Statement = [
@@ -35,6 +37,13 @@ module "s3_admin_policy" {
         Resource = ["${module.s3.bucket_arn}/*"]
       }
     ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-s3-admin-policy"
+    Environment = var.environment
+    Purpose     = "S3 administration"
+    Service     = "S3"
   }
 }
 
@@ -95,6 +104,8 @@ module "kms_admin_policy" {
   source      = "../../modules/iam_policies"
   name        = "kms-admin-policy"
   description = "Full access to KMS"
+  path        = "/"
+
   policy_document = {
     Version = "2012-10-17"
     Statement = [{
@@ -123,6 +134,13 @@ module "kms_admin_policy" {
         aws_kms_key.s3_key.arn
       ]
     }]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-kms-admin-policy"
+    Environment = var.environment
+    Purpose     = "KMS administration"
+    Service     = "KMS"
   }
 }
 

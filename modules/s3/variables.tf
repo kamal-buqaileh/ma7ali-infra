@@ -1,6 +1,11 @@
 variable "bucket_prefix" {
   description = "Prefix for the S3 bucket name"
   type        = string
+  
+  validation {
+    condition = can(regex("^[a-z0-9-]+$", var.bucket_prefix))
+    error_message = "Bucket prefix must contain only lowercase letters, numbers, and hyphens."
+  }
 }
 
 variable "environment" {
@@ -67,6 +72,14 @@ variable "lifecycle_rules" {
     expiration_days = number
   }))
   default = []
+  
+  validation {
+    condition = length(var.lifecycle_rules) == 0 || alltrue([
+      for rule in var.lifecycle_rules : 
+      rule.transition_days > 0 && rule.expiration_days > 0
+    ])
+    error_message = "Transition and expiration days must be positive numbers."
+  }
 }
 
 variable "kms_key_arn" {

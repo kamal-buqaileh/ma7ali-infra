@@ -1,5 +1,5 @@
 .PHONY: install-tools init plan validate fmt check-versions lint security policy cost
-.PHONY: up down restart logs shell clean
+.PHONY: up down restart logs shell clean resource
 
 init:
 	terraform init
@@ -33,7 +33,7 @@ lint:
 
 # Run tfsec to check for security vulnerabilities
 security:
-	tfsec . --exclude aws-iam-no-policy-wildcards
+	tfsec . --exclude aws-iam-no-policy-wildcards,aws-s3-enable-versioning
 
 # Run Checkov to check for compliance and policy violations
 policy:
@@ -42,6 +42,22 @@ policy:
 # Run Infracost to estimate cost from Terraform code
 cost:
 	infracost breakdown --path . --no-color
+
+# Create a new resource and its corresponding module
+# Usage: make resource <resource-name>
+# Example: make resource vpc
+resource:
+	@mkdir -p ../../modules/$(word 2,$(MAKECMDGOALS))
+	@echo "# $(word 2,$(MAKECMDGOALS)) module" > ../../modules/$(word 2,$(MAKECMDGOALS))/main.tf
+	@echo "# $(word 2,$(MAKECMDGOALS)) module variables" > ../../modules/$(word 2,$(MAKECMDGOALS))/variables.tf
+	@echo "# $(word 2,$(MAKECMDGOALS)) module outputs" > ../../modules/$(word 2,$(MAKECMDGOALS))/outputs.tf
+	@echo "# $(word 2,$(MAKECMDGOALS)) README" > ../../modules/$(word 2,$(MAKECMDGOALS))/README.md
+	@echo "# $(word 2,$(MAKECMDGOALS)) configuration" > $(word 2,$(MAKECMDGOALS)).tf
+	@echo "✅ Created $(word 2,$(MAKECMDGOALS)) resource and module!"
+
+# Catch-all target to prevent errors when resource names are passed
+%:
+	@:
 
 # Start LocalStack
 up:

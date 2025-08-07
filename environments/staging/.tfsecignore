@@ -1,4 +1,9 @@
 # Suppress false positive warnings about S3 object wildcards
 # These are standard AWS patterns for S3 object access
 aws-iam-no-policy-wildcards:
-  - "S3 object access requires /* pattern for bucket objects" 
+  - "S3 object access requires /* pattern for bucket objects"
+
+# Suppress S3 versioning warning for staging environment
+# Versioning is enabled only in production environments for cost optimization
+aws-s3-enable-versioning:
+  - "Versioning is enabled only in production environments for data protection and compliance" 

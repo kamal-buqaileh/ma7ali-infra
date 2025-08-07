@@ -3,6 +3,7 @@
 module "s3_admin_group" {
   source      = "../../modules/iam_groups"
   group_name  = "s3-admin"
+  path        = "/"
   enforce_mfa = true
   policy_arn_map = {
     s3 = module.s3_admin_policy.arn
@@ -12,6 +13,7 @@ module "s3_admin_group" {
 module "s3_viewer_group" {
   source      = "../../modules/iam_groups"
   group_name  = "s3-viewer"
+  path        = "/"
   enforce_mfa = true
   policy_arn_map = {
     s3 = module.s3_viewer_policy.arn
@@ -21,6 +23,7 @@ module "s3_viewer_group" {
 module "s3_developer_group" {
   source      = "../../modules/iam_groups"
   group_name  = "s3-developer"
+  path        = "/"
   enforce_mfa = true
   policy_arn_map = {
     s3 = module.s3_developer_policy.arn

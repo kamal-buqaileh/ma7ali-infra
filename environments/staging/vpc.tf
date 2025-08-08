@@ -17,6 +17,7 @@ module "vpc" {
         module.routes.route_tables_by_name["private"]
       ]
       private_dns_enabled = false
+      policy              = jsonencode(local.vpc_endpoint_policy)
       tags = {
         Purpose = "S3 access for ECR image layers"
         Service = "S3"
@@ -30,6 +31,7 @@ module "vpc" {
       subnet_ids          = module.subnets.subnets_by_tier["Private"]
       security_group_ids  = []
       private_dns_enabled = true
+      policy              = jsonencode(local.vpc_endpoint_policy)
       tags = {
         Purpose = "ECR API access for repository management"
         Service = "ECR"
@@ -43,6 +45,7 @@ module "vpc" {
       subnet_ids          = module.subnets.subnets_by_tier["Private"]
       security_group_ids  = []
       private_dns_enabled = true
+      policy              = jsonencode(local.vpc_endpoint_policy)
       tags = {
         Purpose = "ECR Docker registry for image push/pull"
         Service = "ECR"

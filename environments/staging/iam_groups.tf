@@ -138,6 +138,48 @@ module "iam_admin_group" {
   }
 }
 
+# ECR Groups
+
+module "ecr_admin_group" {
+  source      = "../../modules/iam_groups"
+  group_name  = "ecr-admin"
+  path        = "/"
+  enforce_mfa = true
+  policy_arn_map = {
+    ecr = module.ecr_admin_policy.arn
+  }
+}
+
+module "ecr_deployer_group" {
+  source      = "../../modules/iam_groups"
+  group_name  = "ecr-deployer"
+  path        = "/"
+  enforce_mfa = true
+  policy_arn_map = {
+    ecr = module.ecr_deployer_policy.arn
+  }
+}
+
+module "ecr_developer_group" {
+  source      = "../../modules/iam_groups"
+  group_name  = "ecr-developer"
+  path        = "/"
+  enforce_mfa = true
+  policy_arn_map = {
+    ecr = module.ecr_developer_policy.arn
+  }
+}
+
+module "ecr_viewer_group" {
+  source      = "../../modules/iam_groups"
+  group_name  = "ecr-viewer"
+  path        = "/"
+  enforce_mfa = true
+  policy_arn_map = {
+    ecr = module.ecr_viewer_policy.arn
+  }
+}
+
 # Composite Groups
 
 module "admin_group" {
@@ -150,7 +192,8 @@ module "admin_group" {
     kms        = module.kms_admin_policy.arn,
     iam        = module.iam_admin_policy.arn,
     vpc        = module.vpc_admin_policy.arn,
-    cloudwatch = module.cloudwatch_admin_policy.arn
+    cloudwatch = module.cloudwatch_admin_policy.arn,
+    ecr        = module.ecr_admin_policy.arn
   }
 }
 
@@ -163,7 +206,8 @@ module "developer_group" {
     s3         = module.s3_developer_policy.arn,
     kms        = module.kms_developer_policy.arn,
     vpc        = module.vpc_developer_policy.arn,
-    cloudwatch = module.cloudwatch_developer_policy.arn
+    cloudwatch = module.cloudwatch_developer_policy.arn,
+    ecr        = module.ecr_developer_policy.arn
   }
 }
 
@@ -176,6 +220,7 @@ module "viewer_group" {
     s3         = module.s3_viewer_policy.arn,
     kms        = module.kms_viewer_policy.arn,
     vpc        = module.vpc_viewer_policy.arn,
-    cloudwatch = module.cloudwatch_viewer_policy.arn
+    cloudwatch = module.cloudwatch_viewer_policy.arn,
+    ecr        = module.ecr_viewer_policy.arn
   }
 }

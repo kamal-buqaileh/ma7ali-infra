@@ -4,6 +4,7 @@
 environments/staging/.terraform/*
 environments/staging/.terraform.lock.hcl
 environments/staging/.terraform.lock.hcl
+environments/staging/terraform.tfvars
 *.tfstate*
 *.tfvars
 .DS_Store

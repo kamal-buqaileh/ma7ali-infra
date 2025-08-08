@@ -24,6 +24,9 @@ resource "aws_vpc_endpoint" "this" {
   # Only Gateway endpoints (e.g., S3) use route_table_ids
   route_table_ids     = each.value.endpoint_type == "Gateway" ? coalesce(each.value.route_table_ids, []) : null
 
+  # Attach policy if provided
+  policy              = each.value.policy
+
   tags = merge(var.tags, each.value.tags, {
     Name = "${var.name}-${each.key}-endpoint"
   })

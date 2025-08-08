@@ -666,3 +666,200 @@ module "iam_viewer_policy" {
     Service     = "IAM"
   }
 }
+
+# ECR Policies
+module "ecr_admin_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "ecr-admin-policy"
+  description = "Full access to ECR repositories"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:CreateRepository",
+          "ecr:DeleteRepository",
+          "ecr:DescribeRepositories",
+          "ecr:DescribeImages",
+          "ecr:ListImages",
+          "ecr:BatchGetImage",
+          "ecr:BatchDeleteImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload",
+          "ecr:PutImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetRepositoryPolicy",
+          "ecr:SetRepositoryPolicy",
+          "ecr:DeleteRepositoryPolicy",
+          "ecr:GetLifecyclePolicy",
+          "ecr:PutLifecyclePolicy",
+          "ecr:DeleteLifecyclePolicy",
+          "ecr:GetLifecyclePolicyPreview",
+          "ecr:StartLifecyclePolicyPreview",
+          "ecr:TagResource",
+          "ecr:UntagResource",
+          "ecr:ListTagsForResource",
+          "ecr:DescribeImageScanFindings",
+          "ecr:StartImageScan"
+        ]
+        Resource = [
+          "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/${var.project_name}-${var.environment}-*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-ecr-admin-policy"
+    Environment = var.environment
+    Purpose     = "ECR administration"
+    Service     = "ECR"
+  }
+}
+
+
+module "ecr_developer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "ecr-developer-policy"
+  description = "Pull access and limited push to ECR repositories for development"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:DescribeRepositories",
+          "ecr:DescribeImages",
+          "ecr:ListImages",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:DescribeImageScanFindings"
+        ]
+        Resource = [
+          "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/${var.project_name}-${var.environment}-*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-ecr-developer-policy"
+    Environment = var.environment
+    Purpose     = "ECR development"
+    Service     = "ECR"
+  }
+}
+
+module "ecr_viewer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "ecr-viewer-policy"
+  description = "Read-only access to ECR repositories"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:DescribeRepositories",
+          "ecr:DescribeImages",
+          "ecr:ListImages",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:GetRepositoryPolicy",
+          "ecr:GetLifecyclePolicy",
+          "ecr:GetLifecyclePolicyPreview",
+          "ecr:ListTagsForResource",
+          "ecr:DescribeImageScanFindings"
+        ]
+        Resource = [
+          "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/${var.project_name}-${var.environment}-*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-ecr-viewer-policy"
+    Environment = var.environment
+    Purpose     = "ECR viewing"
+    Service     = "ECR"
+  }
+}
+
+module "ecr_deployer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "ecr-deployer-policy"
+  description = "Push and pull access to ECR repositories"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:DescribeRepositories",
+          "ecr:DescribeImages",
+          "ecr:ListImages",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload",
+          "ecr:PutImage",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:DescribeImageScanFindings",
+          "ecr:StartImageScan"
+        ]
+        Resource = [
+          "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/${var.project_name}-${var.environment}-*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-ecr-deployer-policy"
+    Environment = var.environment
+    Purpose     = "ECR deployment"
+    Service     = "ECR"
+  }
+}

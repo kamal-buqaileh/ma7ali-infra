@@ -64,3 +64,13 @@ output "flow_log_role_arn" {
   description = "The ARN of the VPC flow log IAM role"
   value       = var.enable_vpc_flow_logs ? aws_iam_role.flow_log[0].arn : null
 }
+
+output "github_actions_role_arn" {
+  description = "The ARN of the GitHub Actions role for CI/CD"
+  value       = aws_iam_role.github_actions_deployer.arn
+}
+
+output "github_oidc_provider_arn" {
+  description = "The ARN of the GitHub OIDC identity provider"
+  value       = aws_iam_openid_connect_provider.github.arn
+}

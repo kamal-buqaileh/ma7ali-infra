@@ -27,6 +27,8 @@ variable "vpc_endpoints" {
     private_dns_enabled = bool
     # For Gateway endpoints (e.g., S3), allow specifying route tables to associate
     route_table_ids     = optional(list(string), null)
+    # Policy document (JSON string) to attach to the VPC endpoint
+    policy              = optional(string, null)
     tags                = map(string)
   }))
   description = "Map of VPC endpoints to create"

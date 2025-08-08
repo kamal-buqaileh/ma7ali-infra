@@ -8,18 +8,25 @@ resource "aws_route_table" "this" {
   })
 }
 
-# Create routes for each route table
+# Create routes for each route in each route table (supports zero routes)
 resource "aws_route" "this" {
-  count = length(var.route_tables)
+  for_each = merge([
+    for rt_index, route_table in var.route_tables : {
+      for r_index, r in route_table.routes : "${rt_index}-${r_index}" => {
+        route_table_index = rt_index
+        route             = r
+      }
+    }
+  ]...)
 
-  route_table_id = aws_route_table.this[count.index].id
+  route_table_id = aws_route_table.this[each.value.route_table_index].id
 
   # Route configuration
-  destination_cidr_block = length(var.route_tables[count.index].routes) > 0 ? var.route_tables[count.index].routes[0].cidr_block : null
+  destination_cidr_block = try(each.value.route.cidr_block, null)
 
   # Gateway or NAT Gateway (only set if provided)
-  gateway_id     = length(var.route_tables[count.index].routes) > 0 ? try(var.route_tables[count.index].routes[0].gateway_id, null) : null
-  nat_gateway_id = length(var.route_tables[count.index].routes) > 0 ? try(var.route_tables[count.index].routes[0].nat_gateway_id, null) : null
+  gateway_id     = try(each.value.route.gateway_id, null)
+  nat_gateway_id = try(each.value.route.nat_gateway_id, null)
 }
 
 # Associate route tables with subnets using for_each

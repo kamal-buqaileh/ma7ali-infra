@@ -9,3 +9,6 @@ s3_lifecycle_rules = [
     expiration_days = 90
   }
 ]
+
+# Align region with subnets' AZs (eu-central-1a/b)
+aws_region = "eu-central-1"

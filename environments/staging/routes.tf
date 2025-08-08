@@ -1,5 +1,4 @@
 # For now, let's create a simple public route table only
-# Private routes will be added when NAT gateways are created
 module "routes" {
   source = "../../modules/routes"
 
@@ -18,6 +17,14 @@ module "routes" {
       subnet_ids = module.subnets.subnets_by_tier["Public"]
       tags = {
         Purpose = "Public route table"
+      }
+    },
+    {
+      name       = "private"
+      routes     = []
+      subnet_ids = module.subnets.subnets_by_tier["Private"]
+      tags = {
+        Purpose = "Private route table"
       }
     }
   ]

@@ -21,31 +21,6 @@ variable "create_internet_gateway" {
   default     = true
 }
 
-variable "create_nat_gateways" {
-  type        = bool
-  description = "Whether to create NAT Gateways"
-  default     = false
-}
-
-variable "nat_gateway_subnet_ids" {
-  type        = list(string)
-  description = "List of subnet IDs where NAT Gateways should be created"
-  default     = []
-}
-
-variable "vpc_endpoints" {
-  type = map(object({
-    service_name        = string
-    endpoint_type       = string
-    subnet_ids          = list(string)
-    security_group_ids  = list(string)
-    private_dns_enabled = bool
-    tags               = map(string)
-  }))
-  description = "Map of VPC endpoints to create"
-  default     = {}
-}
-
 variable "tags" {
   type        = map(string)
   description = "Tags to apply to all gateways"

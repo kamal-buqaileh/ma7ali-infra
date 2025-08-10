@@ -46,3 +46,20 @@ variable "github_repositories" {
     error_message = "All GitHub repositories must be in format 'owner/repo'."
   }
 }
+
+variable "domain_name" {
+  type        = string
+  description = "The domain name for the application"
+  default     = "ma7ali.app"
+  validation {
+    condition     = can(regex("^[a-z0-9.-]+\\.[a-z]{2,}$", var.domain_name))
+    error_message = "Domain name must be a valid domain format (e.g., example.com)."
+  }
+}
+
+variable "is_production" {
+  type        = bool
+  description = "Whether this is the production environment (uses root domain instead of subdomain)"
+  default     = false
+}
+

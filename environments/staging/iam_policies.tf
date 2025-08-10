@@ -667,6 +667,199 @@ module "iam_viewer_policy" {
   }
 }
 
+# Route 53 Policies
+module "route53_admin_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "route53-admin-policy"
+  description = "Full access to Route53 hosted zones and records"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "route53:CreateHostedZone",
+          "route53:DeleteHostedZone",
+          "route53:GetHostedZone",
+          "route53:ListHostedZones",
+          "route53:UpdateHostedZoneComment",
+          "route53:ChangeResourceRecordSets",
+          "route53:ListResourceRecordSets",
+          "route53:GetChange",
+          "route53:ListTagsForResource",
+          "route53:ChangeTagsForResource"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-route53-admin-policy"
+    Environment = var.environment
+    Purpose     = "Route53 administration"
+    Service     = "Route53"
+  }
+}
+
+module "route53_developer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "route53-developer-policy"
+  description = "Limited Route53 access for development"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "route53:GetHostedZone",
+          "route53:ListHostedZones",
+          "route53:ChangeResourceRecordSets",
+          "route53:ListResourceRecordSets",
+          "route53:GetChange"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-route53-developer-policy"
+    Environment = var.environment
+    Purpose     = "Route53 development"
+    Service     = "Route53"
+  }
+}
+
+module "route53_viewer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "route53-viewer-policy"
+  description = "Read-only access to Route53"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "route53:GetHostedZone",
+          "route53:ListHostedZones",
+          "route53:ListResourceRecordSets",
+          "route53:GetChange"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-route53-viewer-policy"
+    Environment = var.environment
+    Purpose     = "Route53 viewing"
+    Service     = "Route53"
+  }
+}
+
+# ACM Policies
+module "acm_admin_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "acm-admin-policy"
+  description = "Full access to ACM certificates"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "acm:RequestCertificate",
+          "acm:DeleteCertificate",
+          "acm:DescribeCertificate",
+          "acm:ListCertificates",
+          "acm:AddTagsToCertificate",
+          "acm:RemoveTagsFromCertificate",
+          "acm:ListTagsForCertificate",
+          "acm:ResendValidationEmail",
+          "acm:GetCertificate"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-acm-admin-policy"
+    Environment = var.environment
+    Purpose     = "ACM administration"
+    Service     = "ACM"
+  }
+}
+
+module "acm_developer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "acm-developer-policy"
+  description = "Limited ACM access for development"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "acm:DescribeCertificate",
+          "acm:ListCertificates",
+          "acm:ListTagsForCertificate",
+          "acm:GetCertificate"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-acm-developer-policy"
+    Environment = var.environment
+    Purpose     = "ACM development"
+    Service     = "ACM"
+  }
+}
+
+module "acm_viewer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "acm-viewer-policy"
+  description = "Read-only access to ACM certificates"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "acm:DescribeCertificate",
+          "acm:ListCertificates",
+          "acm:ListTagsForCertificate"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-acm-viewer-policy"
+    Environment = var.environment
+    Purpose     = "ACM viewing"
+    Service     = "ACM"
+  }
+}
+
 # ECR Policies
 module "ecr_admin_policy" {
   source      = "../../modules/iam_policies"
@@ -861,5 +1054,146 @@ module "ecr_deployer_policy" {
     Environment = var.environment
     Purpose     = "ECR deployment"
     Service     = "ECR"
+  }
+}
+
+# ALB Policies
+
+module "alb_admin_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "alb-admin-policy"
+  description = "Full access to Application Load Balancer"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "elasticloadbalancing:*",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceHealth",
+          "ec2:DescribeTargets",
+          "ec2:CreateSecurityGroup",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupEgress",
+          "ec2:DeleteSecurityGroup"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "acm:ListCertificates",
+          "acm:DescribeCertificate"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-alb-admin-policy"
+    Environment = var.environment
+    Purpose     = "ALB administration"
+    Service     = "ELB"
+  }
+}
+
+module "alb_developer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "alb-developer-policy"
+  description = "Developer access to Application Load Balancer"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DescribeTargetHealth",
+          "elasticloadbalancing:DescribeListeners",
+          "elasticloadbalancing:DescribeRules",
+          "elasticloadbalancing:RegisterTargets",
+          "elasticloadbalancing:DeregisterTargets",
+          "elasticloadbalancing:ModifyTargetGroup",
+          "elasticloadbalancing:ModifyListener",
+          "elasticloadbalancing:CreateRule",
+          "elasticloadbalancing:ModifyRule",
+          "elasticloadbalancing:DeleteRule"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeInstances",
+          "ec2:DescribeInstanceHealth"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-alb-developer-policy"
+    Environment = var.environment
+    Purpose     = "ALB development access"
+    Service     = "ELB"
+  }
+}
+
+module "alb_viewer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "alb-viewer-policy"
+  description = "Read-only access to Application Load Balancer"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DescribeTargetHealth",
+          "elasticloadbalancing:DescribeListeners",
+          "elasticloadbalancing:DescribeRules",
+          "elasticloadbalancing:DescribeLoadBalancerAttributes",
+          "elasticloadbalancing:DescribeTargetGroupAttributes"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeInstances"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-alb-viewer-policy"
+    Environment = var.environment
+    Purpose     = "ALB read-only access"
+    Service     = "ELB"
   }
 }

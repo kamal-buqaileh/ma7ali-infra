@@ -180,6 +180,38 @@ module "ecr_viewer_group" {
   }
 }
 
+# ALB Groups
+
+module "alb_admin_group" {
+  source      = "../../modules/iam_groups"
+  group_name  = "alb-admin"
+  path        = "/"
+  enforce_mfa = true
+  policy_arn_map = {
+    alb = module.alb_admin_policy.arn
+  }
+}
+
+module "alb_developer_group" {
+  source      = "../../modules/iam_groups"
+  group_name  = "alb-developer"
+  path        = "/"
+  enforce_mfa = true
+  policy_arn_map = {
+    alb = module.alb_developer_policy.arn
+  }
+}
+
+module "alb_viewer_group" {
+  source      = "../../modules/iam_groups"
+  group_name  = "alb-viewer"
+  path        = "/"
+  enforce_mfa = true
+  policy_arn_map = {
+    alb = module.alb_viewer_policy.arn
+  }
+}
+
 # Composite Groups
 
 module "admin_group" {
@@ -193,7 +225,10 @@ module "admin_group" {
     iam        = module.iam_admin_policy.arn,
     vpc        = module.vpc_admin_policy.arn,
     cloudwatch = module.cloudwatch_admin_policy.arn,
-    ecr        = module.ecr_admin_policy.arn
+    ecr        = module.ecr_admin_policy.arn,
+    route53    = module.route53_admin_policy.arn,
+    acm        = module.acm_admin_policy.arn,
+    alb        = module.alb_admin_policy.arn
   }
 }
 
@@ -207,7 +242,10 @@ module "developer_group" {
     kms        = module.kms_developer_policy.arn,
     vpc        = module.vpc_developer_policy.arn,
     cloudwatch = module.cloudwatch_developer_policy.arn,
-    ecr        = module.ecr_developer_policy.arn
+    ecr        = module.ecr_developer_policy.arn,
+    route53    = module.route53_developer_policy.arn,
+    acm        = module.acm_developer_policy.arn,
+    alb        = module.alb_developer_policy.arn
   }
 }
 
@@ -221,6 +259,9 @@ module "viewer_group" {
     kms        = module.kms_viewer_policy.arn,
     vpc        = module.vpc_viewer_policy.arn,
     cloudwatch = module.cloudwatch_viewer_policy.arn,
-    ecr        = module.ecr_viewer_policy.arn
+    ecr        = module.ecr_viewer_policy.arn,
+    route53    = module.route53_viewer_policy.arn,
+    acm        = module.acm_viewer_policy.arn,
+    alb        = module.alb_viewer_policy.arn
   }
 }

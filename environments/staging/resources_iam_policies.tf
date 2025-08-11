@@ -48,4 +48,11 @@ locals {
   }
 }
 
+# =============================================================================
+# RDS RESOURCE POLICIES
+# =============================================================================
+# Note: For single-account RDS setup, identity-based policies in iam_policies.tf
+# provide sufficient access control. Resource-based policies will be added when
+# cross-account access or EKS integration is needed.
+
 

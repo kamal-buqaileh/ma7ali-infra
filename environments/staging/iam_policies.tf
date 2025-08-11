@@ -1197,3 +1197,194 @@ module "alb_viewer_policy" {
     Service     = "ELB"
   }
 }
+
+# RDS Policies
+
+module "rds_admin_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "rds-admin-policy"
+  description = "Full access to RDS instances"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "rds:*",
+          "rds-db:*",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups",
+          "ec2:CreateSecurityGroup",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:AuthorizeSecurityGroupEgress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupEgress",
+          "ec2:DeleteSecurityGroup"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:ListSecrets",
+          "secretsmanager:CreateSecret",
+          "secretsmanager:UpdateSecret",
+          "secretsmanager:DeleteSecret",
+          "secretsmanager:PutSecretValue"
+        ]
+        Resource = [
+          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.project_name}-${var.environment}-*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Describe*",
+          "kms:List*",
+          "kms:Decrypt",
+          "kms:Encrypt",
+          "kms:GenerateDataKey*"
+        ]
+        Resource = [
+          module.main_kms_key.arn
+        ]
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-rds-admin-policy"
+    Environment = var.environment
+    Purpose     = "RDS administration"
+    Service     = "RDS"
+  }
+}
+
+module "rds_developer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "rds-developer-policy"
+  description = "Developer access to RDS instances"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBClusters",
+          "rds:DescribeDBSnapshots",
+          "rds:DescribeDBClusterSnapshots",
+          "rds:DescribeDBParameterGroups",
+          "rds:DescribeDBParameters",
+          "rds:DescribeDBSubnetGroups",
+          "rds:DescribeDBLogFiles",
+          "rds:DownloadDBLogFilePortion",
+          "rds:ModifyDBInstance",
+          "rds:RebootDBInstance",
+          "rds:CreateDBSnapshot",
+          "rds:RestoreDBInstanceFromDBSnapshot",
+          "rds-db:connect"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+        Resource = [
+          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.project_name}-${var.environment}-*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Describe*",
+          "kms:Decrypt"
+        ]
+        Resource = [
+          module.main_kms_key.arn
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-rds-developer-policy"
+    Environment = var.environment
+    Purpose     = "RDS development access"
+    Service     = "RDS"
+  }
+}
+
+module "rds_viewer_policy" {
+  source      = "../../modules/iam_policies"
+  name        = "rds-viewer-policy"
+  description = "Read-only access to RDS instances"
+  path        = "/"
+
+  policy_document = {
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "rds:DescribeDBInstances",
+          "rds:DescribeDBClusters",
+          "rds:DescribeDBSnapshots",
+          "rds:DescribeDBClusterSnapshots",
+          "rds:DescribeDBParameterGroups",
+          "rds:DescribeDBParameters",
+          "rds:DescribeDBSubnetGroups",
+          "rds:DescribeDBLogFiles",
+          "rds:DownloadDBLogFilePortion",
+          "rds:ListTagsForResource"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:ListSecrets"
+        ]
+        Resource = [
+          "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${var.project_name}-${var.environment}-*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups"
+        ]
+        Resource = "*"
+      }
+    ]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-${var.environment}-rds-viewer-policy"
+    Environment = var.environment
+    Purpose     = "RDS read-only access"
+    Service     = "RDS"
+  }
+}

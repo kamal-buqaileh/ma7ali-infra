@@ -122,3 +122,50 @@ output "target_group_arns" {
   description = "Map of target group ARNs"
   value       = module.alb.target_group_arns
 }
+
+# RDS outputs
+output "rds_instance_id" {
+  description = "The RDS instance ID"
+  value       = module.rds.db_instance_id
+}
+
+output "rds_instance_endpoint" {
+  description = "The RDS instance endpoint"
+  value       = module.rds.db_instance_endpoint
+}
+
+output "rds_instance_address" {
+  description = "The RDS instance hostname"
+  value       = module.rds.db_instance_address
+}
+
+output "rds_instance_port" {
+  description = "The RDS instance port"
+  value       = module.rds.db_instance_port
+}
+
+output "rds_database_name" {
+  description = "The database name"
+  value       = module.rds.db_instance_name
+}
+
+output "rds_password_secret_arn" {
+  description = "The ARN of the Secrets Manager secret containing the database password"
+  value       = module.rds.db_instance_password_secret_arn
+}
+
+output "rds_password_secret_name" {
+  description = "The name of the Secrets Manager secret containing the database password"
+  value       = module.rds.db_instance_password_secret_name
+}
+
+output "rds_connection_string" {
+  description = "PostgreSQL connection string (without password)"
+  value       = module.rds.connection_string
+  sensitive   = true
+}
+
+output "rds_jdbc_connection_string" {
+  description = "JDBC connection string (without password)"
+  value       = module.rds.jdbc_connection_string
+}

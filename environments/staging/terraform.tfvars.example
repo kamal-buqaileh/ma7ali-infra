@@ -1,0 +1,82 @@
+# Ma7ali Infrastructure - Staging Environment Configuration
+# Copy this file to terraform.tfvars and update the values according to your setup
+
+# =============================================================================
+# REQUIRED VARIABLES - You MUST update these values
+# =============================================================================
+
+# Your AWS region where resources will be created
+aws_region = "eu-central-1"  # Change to your preferred region
+
+# Your domain name for the application
+domain_name = "yourdomain.com"  # Replace with your actual domain
+
+# GitHub repositories for OIDC authentication (format: "owner/repo")
+github_repositories = [
+  "your-username/your-frontend-repo",
+  "your-username/your-backend-repo"
+]
+
+# =============================================================================
+# OPTIONAL VARIABLES - You can customize these or leave as defaults
+# =============================================================================
+
+# Project name (used in resource naming)
+project_name = "example"
+
+# Environment name
+environment = "staging"
+
+# Database configuration
+db_master_username = "postgres"
+db_name = "example"
+
+# Production flag (false for staging, true for production)
+is_production = false
+
+# VPC Flow Logs (recommended: true for security monitoring)
+enable_vpc_flow_logs = true
+
+# S3 bucket ACL (recommended: "private")
+acl = "private"
+
+# S3 Lifecycle rules for cost optimization (optional)
+s3_lifecycle_rules = [
+  {
+    id              = "staging_lifecycle"
+    status          = "Enabled"
+    prefix          = ""
+    transition_days = 30
+    storage_class   = "STANDARD_IA"
+    expiration_days = 90
+  }
+]
+
+# =============================================================================
+# CONFIGURATION NOTES
+# =============================================================================
+
+# 1. AWS Region:
+#    - Choose a region close to your users for better latency
+#    - Ensure all AWS services are available in your chosen region
+#    - Popular choices: us-east-1, eu-central-1, ap-southeast-1
+
+# 2. Domain Name:
+#    - Must be a domain you own and can manage DNS for
+#    - Will be used for: staging.yourdomain.com, api.staging.yourdomain.com
+#    - Ensure you can create Route53 hosted zone or manage DNS records
+
+# 3. GitHub Repositories:
+#    - Used for OIDC authentication in CI/CD pipelines
+#    - Format must be: "owner/repository-name"
+#    - Multiple repositories can be added for different services
+
+# 4. Database Configuration:
+#    - db_master_username: PostgreSQL master user (default: postgres)
+#    - db_name: Database name for your application (default: ma7ali)
+#    - Password is auto-generated and stored in Secrets Manager
+
+# 5. Cost Optimization:
+#    - S3 lifecycle rules help reduce storage costs
+#    - VPC Flow Logs provide security monitoring (small cost)
+#    - All settings are optimized for staging environment costs

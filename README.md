@@ -395,9 +395,10 @@ make cost
 # 1. Configure AWS credentials
 aws configure
 
-# 2. Update terraform.tfvars with your values
+# 2. Configure your environment variables
+cd environments/staging
 cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars with your domain, region, etc.
+# Edit terraform.tfvars with your specific values (see configuration guide below)
 
 # 3. Deploy to AWS
 make plan-aws    # Preview changes for AWS
@@ -413,6 +414,58 @@ docker push your-account.dkr.ecr.region.amazonaws.com/frontend
 # https://api.staging.your-domain.com
 # https://admin.staging.your-domain.com
 ```
+
+## ⚙️ Configuration Guide
+
+### **Required Configuration (terraform.tfvars)**
+
+Before deploying to AWS, you **must** configure these variables in `environments/staging/terraform.tfvars`:
+
+| Variable | Description | Example | Required |
+|----------|-------------|---------|----------|
+| `aws_region` | AWS region for deployment | `"eu-central-1"` | ✅ Yes |
+| `domain_name` | Your domain name | `"yourdomain.com"` | ✅ Yes |
+| `github_repositories` | GitHub repos for CI/CD | `["owner/frontend", "owner/backend"]` | ✅ Yes |
+
+### **Optional Configuration**
+
+| Variable | Description | Default | Notes |
+|----------|-------------|---------|-------|
+| `project_name` | Project identifier | `"ma7ali"` | Used in resource naming |
+| `environment` | Environment name | `"staging"` | Used in resource naming |
+| `db_master_username` | Database username | `"postgres"` | PostgreSQL master user |
+| `db_name` | Database name | `"ma7ali"` | Application database |
+| `is_production` | Production flag | `false` | Affects domain routing |
+| `enable_vpc_flow_logs` | VPC monitoring | `true` | Security monitoring |
+
+### **Configuration Steps**
+
+1. **Copy the example file:**
+   ```bash
+   cd environments/staging
+   cp terraform.tfvars.example terraform.tfvars
+   ```
+
+2. **Update required variables:**
+   ```hcl
+   # terraform.tfvars
+   aws_region = "your-preferred-region"
+   domain_name = "yourdomain.com"
+   github_repositories = [
+     "your-username/your-frontend-repo",
+     "your-username/your-backend-repo"
+   ]
+   ```
+
+3. **Verify your domain setup:**
+   - Ensure you own the domain specified in `domain_name`
+   - You'll need to manage DNS records (Route53 or external DNS)
+   - The infrastructure will create: `staging.yourdomain.com`, `api.staging.yourdomain.com`
+
+4. **GitHub OIDC setup:**
+   - Repositories must exist and be accessible
+   - Used for secure CI/CD authentication without long-lived credentials
+   - Format: `"owner/repository-name"`
 
 ## 🧪 Testing & Validation
 

@@ -261,7 +261,8 @@ module "admin_group" {
     route53    = module.route53_admin_policy.arn,
     acm        = module.acm_admin_policy.arn,
     alb        = module.alb_admin_policy.arn,
-    rds        = module.rds_admin_policy.arn
+    rds        = module.rds_admin_policy.arn,
+    ecs        = module.ecs_admin_policy.arn
   }
 }
 
@@ -279,7 +280,8 @@ module "developer_group" {
     route53    = module.route53_developer_policy.arn,
     acm        = module.acm_developer_policy.arn,
     alb        = module.alb_developer_policy.arn,
-    rds        = module.rds_developer_policy.arn
+    rds        = module.rds_developer_policy.arn,
+    ecs        = module.ecs_developer_policy.arn
   }
 }
 
@@ -297,6 +299,7 @@ module "viewer_group" {
     route53    = module.route53_viewer_policy.arn,
     acm        = module.acm_viewer_policy.arn,
     alb        = module.alb_viewer_policy.arn,
-    rds        = module.rds_viewer_policy.arn
+    rds        = module.rds_viewer_policy.arn,
+    ecs        = module.ecs_viewer_policy.arn
   }
 }

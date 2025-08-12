@@ -36,15 +36,8 @@ output "db_instance_username" {
   sensitive   = true
 }
 
-output "db_instance_password_secret_arn" {
-  description = "The ARN of the Secrets Manager secret containing the database password"
-  value       = aws_secretsmanager_secret.db_password.arn
-}
-
-output "db_instance_password_secret_name" {
-  description = "The name of the Secrets Manager secret containing the database password"
-  value       = aws_secretsmanager_secret.db_password.name
-}
+# Secrets are now managed externally by the SSM module
+# Use module.ssm.secret_arns["database_credentials"] to get the secret ARN
 
 output "db_instance_engine" {
   description = "The database engine"

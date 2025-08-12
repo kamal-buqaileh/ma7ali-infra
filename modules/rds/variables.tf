@@ -29,6 +29,12 @@ variable "master_username" {
   }
 }
 
+variable "master_password" {
+  type        = string
+  description = "Password for the master DB user (managed externally)"
+  sensitive   = true
+}
+
 # Network Configuration
 variable "vpc_id" {
   type        = string
@@ -114,6 +120,7 @@ variable "kms_key_id" {
   default     = null
 }
 
+# DEPRECATED: Secrets are now managed externally by SSM module
 variable "secrets_kms_key_id" {
   type        = string
   description = "The ARN for the KMS encryption key for secrets"
@@ -281,6 +288,7 @@ variable "iam_database_authentication_enabled" {
   default     = false
 }
 
+# DEPRECATED: Secrets are now managed externally by SSM module
 variable "secrets_resource_policy" {
   type        = string
   description = "Resource policy JSON for the Secrets Manager secret"

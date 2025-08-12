@@ -52,18 +52,33 @@ module "vpc" {
       }
     }
 
-    # CloudWatch Logs Interface Endpoint - ~$7/month (optional)
-    # logs = {
-    #   service_name        = "com.amazonaws.${var.aws_region}.logs"
-    #   endpoint_type       = "Interface"
-    #   subnet_ids          = module.subnets.subnets_by_tier["Private"]
-    #   security_group_ids  = []
-    #   private_dns_enabled = true
-    #   tags = {
-    #     Purpose = "CloudWatch Logs access for application logging"
-    #     Service = "CloudWatch"
-    #   }
-    # }
+    # CloudWatch Logs Interface Endpoint - ~$7/month (REQUIRED)
+    logs = {
+      service_name        = "com.amazonaws.${var.aws_region}.logs"
+      endpoint_type       = "Interface"
+      subnet_ids          = module.subnets.subnets_by_tier["Private"]
+      security_group_ids  = []
+      private_dns_enabled = true
+      policy              = jsonencode(local.vpc_endpoint_policy)
+      tags = {
+        Purpose = "CloudWatch Logs access for application logging"
+        Service = "CloudWatch"
+      }
+    }
+
+    # Secrets Manager Interface Endpoint - ~$7/month (REQUIRED)
+    secretsmanager = {
+      service_name        = "com.amazonaws.${var.aws_region}.secretsmanager"
+      endpoint_type       = "Interface"
+      subnet_ids          = module.subnets.subnets_by_tier["Private"]
+      security_group_ids  = []
+      private_dns_enabled = true
+      policy              = jsonencode(local.vpc_endpoint_policy)
+      tags = {
+        Purpose = "Secrets Manager access for database credentials"
+        Service = "SecretsManager"
+      }
+    }
   }
 
   tags = {

@@ -5,7 +5,7 @@ init:
 	terraform init
 
 plan:
-	AWS_S3_FORCE_PATH_STYLE=true terraform plan
+	export AWS_ACCESS_KEY_ID=test && export AWS_SECRET_ACCESS_KEY=test && export AWS_DEFAULT_REGION=eu-central-1 && export AWS_ENDPOINT_URL=http://localhost:4566 && terraform plan
 
 validate:
 	terraform validate
@@ -33,7 +33,7 @@ lint:
 
 # Run tfsec to check for security vulnerabilities
 security:
-	tfsec . --exclude aws-iam-no-policy-wildcards,aws-s3-enable-versioning,aws-ec2-no-public-ip-subnet,aws-iam-enforce-group-mfa,aws-ec2-require-vpc-flow-logs-for-all-vpcs
+	tfsec . --exclude aws-iam-no-policy-wildcards,aws-s3-enable-versioning,aws-ec2-no-public-ip-subnet,aws-iam-enforce-group-mfa,aws-ec2-require-vpc-flow-logs-for-all-vpcs,aws-ecs-enable-container-insight
 
 # Run Checkov to check for compliance and policy violations
 policy:

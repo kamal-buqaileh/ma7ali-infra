@@ -151,8 +151,8 @@ module "rds" {
 | db_instance_address | The RDS instance hostname |
 | db_instance_port | The RDS instance port |
 | db_instance_name | The database name |
-| db_instance_password_secret_arn | The ARN of the Secrets Manager secret containing the database password |
-| db_instance_password_secret_name | The name of the Secrets Manager secret containing the database password |
+| ~~db_instance_password_secret_arn~~ | ~~DEPRECATED: Secrets now managed by external SSM module~~ |
+| ~~db_instance_password_secret_name~~ | ~~DEPRECATED: Secrets now managed by external SSM module~~ |
 | db_security_group_id | The ID of the security group |
 | connection_string | PostgreSQL connection string (without password) |
 | jdbc_connection_string | JDBC connection string (without password) |

@@ -20,11 +20,16 @@ module "routes" {
       }
     },
     {
-      name       = "private"
-      routes     = []
+      name = "private"
+      routes = [
+        {
+          cidr_block     = "0.0.0.0/0"
+          nat_gateway_id = aws_nat_gateway.this.id
+        }
+      ]
       subnet_ids = module.subnets.subnets_by_tier["Private"]
       tags = {
-        Purpose = "Private route table"
+        Purpose = "Private route table with NAT Gateway for internet access"
       }
     }
   ]

@@ -65,6 +65,17 @@ output "flow_log_role_arn" {
   value       = var.enable_vpc_flow_logs ? aws_iam_role.flow_log[0].arn : null
 }
 
+# NAT Gateway outputs
+output "nat_gateway_id" {
+  description = "The ID of the NAT Gateway"
+  value       = aws_nat_gateway.this.id
+}
+
+output "nat_gateway_public_ip" {
+  description = "The public IP address of the NAT Gateway"
+  value       = aws_eip.nat_gateway.public_ip
+}
+
 output "github_actions_role_arn" {
   description = "The ARN of the GitHub Actions role for CI/CD"
   value       = aws_iam_role.github_actions_deployer.arn
@@ -149,14 +160,14 @@ output "rds_database_name" {
   value       = module.rds.db_instance_name
 }
 
-output "rds_password_secret_arn" {
-  description = "The ARN of the Secrets Manager secret containing the database password"
-  value       = module.rds.db_instance_password_secret_arn
+output "database_secret_arn" {
+  description = "The ARN of the Secrets Manager secret containing the database credentials"
+  value       = module.ssm.secret_arns["database_credentials"]
 }
 
-output "rds_password_secret_name" {
-  description = "The name of the Secrets Manager secret containing the database password"
-  value       = module.rds.db_instance_password_secret_name
+output "database_secret_name" {
+  description = "The name of the Secrets Manager secret containing the database credentials"
+  value       = module.ssm.secret_names["database_credentials"]
 }
 
 output "rds_connection_string" {

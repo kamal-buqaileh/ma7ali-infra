@@ -8,8 +8,9 @@ services:
       - "4566:4566"   # Main LocalStack API endpoint
       - "4571:4571"   # Edge port (used for some services)
     environment:
-      - SERVICES=s3, iam, sts
+      - SERVICES=s3,iam,sts,ec2,ecs,ecr,rds,kms,logs,secretsmanager,route53,acm,elasticloadbalancing
       - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
       - localstack_data:/var/lib/localstack
       - /var/run/docker.sock:/var/run/docker.sock

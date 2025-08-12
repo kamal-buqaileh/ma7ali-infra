@@ -11,7 +11,8 @@ module "rds" {
   # Basic configuration
   identifier      = local.rds_identifier
   database_name   = local.database_name
-  master_username = "postgres"
+  master_username = var.db_master_username
+  master_password = random_password.db_master_password.result
 
   # Network configuration
   vpc_id     = module.vpc.vpc_id
@@ -39,16 +40,14 @@ module "rds" {
   maintenance_window      = "sun:04:00-sun:05:00" # UTC maintenance window
 
   # Security configuration
-  storage_encrypted  = true
-  kms_key_id         = module.main_kms_key.arn # Use main KMS key for storage
-  secrets_kms_key_id = module.main_kms_key.arn # Use main KMS key for secrets
+  storage_encrypted = true
+  kms_key_id        = module.main_kms_key.arn # Use main KMS key for storage
 
   # Staging-specific settings with security justifications
   deletion_protection                 = false # Allow deletion for staging environment
   iam_database_authentication_enabled = true  # Enable IAM database authentication
 
-  # Resource-based policy for Secrets Manager (testing if needed)
-  # secrets_resource_policy = jsonencode(local.rds_secrets_policy)
+  # Secrets are now managed externally by the SSM module
 
   # Monitoring (basic for staging)
   performance_insights_enabled = false # Disable to save cost

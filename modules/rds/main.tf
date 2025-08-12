@@ -1,31 +1,5 @@
 # RDS PostgreSQL module
-
-# Random password for database
-resource "random_password" "master_password" {
-  length  = 32
-  special = true
-}
-
-# Store password in AWS Secrets Manager
-resource "aws_secretsmanager_secret" "db_password" {
-  name                    = "${var.identifier}-master-password"
-  description             = "Master password for ${var.identifier} RDS instance"
-  recovery_window_in_days = var.deletion_protection ? 30 : 0
-  kms_key_id             = var.secrets_kms_key_id
-  policy                 = var.secrets_resource_policy
-
-  tags = merge(var.tags, {
-    Name = "${var.identifier}-master-password"
-  })
-}
-
-resource "aws_secretsmanager_secret_version" "db_password" {
-  secret_id     = aws_secretsmanager_secret.db_password.id
-  secret_string = jsonencode({
-    username = var.master_username
-    password = random_password.master_password.result
-  })
-}
+# Secrets are now managed by the external SSM module
 
 # DB subnet group
 resource "aws_db_subnet_group" "this" {
@@ -136,7 +110,7 @@ resource "aws_db_instance" "this" {
   # Database configuration
   db_name  = var.database_name
   username = var.master_username
-  password = random_password.master_password.result
+  password = var.master_password
 
   # Storage configuration
   allocated_storage     = var.allocated_storage
@@ -194,9 +168,7 @@ resource "aws_db_instance" "this" {
     Name = var.identifier
   })
 
-  depends_on = [
-    aws_secretsmanager_secret_version.db_password
-  ]
+  # Dependencies removed - secrets managed externally
 
   lifecycle {
     ignore_changes = [

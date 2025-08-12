@@ -6,6 +6,8 @@ This module creates a simple VPC with DNS support enabled. It's designed to be t
 
 - ✅ **VPC Creation**: Creates a VPC with DNS support enabled
 - ✅ **DNS Support**: Enables DNS hostnames and DNS resolution
+- ✅ **VPC Endpoints**: Support for Gateway and Interface endpoints for AWS services
+- ✅ **Cost Optimization**: Gateway endpoints (S3) are free, Interface endpoints reduce NAT costs
 - ✅ **Tagging**: Comprehensive tagging support for resource management
 - ✅ **Validation**: Input validation for VPC CIDR and naming conventions
 - ✅ **Modular Design**: Simple and focused - other components (subnets, routes, gateways) are separate modules
@@ -32,6 +34,65 @@ module "vpc" {
     Name        = "my-project-staging-vpc"
     Environment = "staging"
     Purpose     = "Main VPC"
+  }
+}
+```
+
+### VPC with Endpoints for Cost Optimization
+
+```hcl
+module "vpc" {
+  source = "../../modules/vpc"
+
+  name      = "my-project-staging"
+  vpc_cidr  = "10.0.0.0/16"
+
+  vpc_endpoints = {
+    # Gateway endpoint (FREE) - for S3 access
+    s3 = {
+      service_name        = "com.amazonaws.us-east-1.s3"
+      endpoint_type       = "Gateway"
+      route_table_ids     = module.routes.route_table_ids
+      security_group_ids  = []
+      private_dns_enabled = false
+      policy              = null
+      tags = {
+        Purpose = "S3 access without NAT Gateway"
+        Service = "S3"
+      }
+    }
+    
+    # Interface endpoints ($17/month each) - for private AWS service access
+    ecr_api = {
+      service_name        = "com.amazonaws.us-east-1.ecr.api"
+      endpoint_type       = "Interface"
+      subnet_ids          = module.subnets.private_subnet_ids
+      security_group_ids  = []
+      private_dns_enabled = true
+      policy              = jsonencode(local.vpc_endpoint_policy)
+      tags = {
+        Purpose = "ECR API access for container pulls"
+        Service = "ECR"
+      }
+    }
+    
+    secretsmanager = {
+      service_name        = "com.amazonaws.us-east-1.secretsmanager"
+      endpoint_type       = "Interface"
+      subnet_ids          = module.subnets.private_subnet_ids
+      security_group_ids  = []
+      private_dns_enabled = true
+      policy              = jsonencode(local.vpc_endpoint_policy)
+      tags = {
+        Purpose = "Secrets Manager access for database credentials"
+        Service = "SecretsManager"
+      }
+    }
+  }
+
+  tags = {
+    Environment = "staging"
+    Project     = "my-project"
   }
 }
 ```

@@ -8,7 +8,7 @@ This module creates a highly available and secure PostgreSQL RDS instance with b
 - **High Availability**: Multi-AZ support with automatic failover
 - **Automated Backups**: Configurable backup retention and maintenance windows
 - **Performance Monitoring**: Performance Insights and enhanced monitoring
-- **Secret Management**: Master password stored in AWS Secrets Manager
+- **External Secret Management**: Master password managed by external SSM module
 - **Read Replicas**: Optional read replicas for read-heavy workloads
 - **Parameter/Option Groups**: Customizable database configuration
 
@@ -17,17 +17,24 @@ This module creates a highly available and secure PostgreSQL RDS instance with b
 ### Basic PostgreSQL Instance
 
 ```hcl
+# First, generate a password (managed externally)
+resource "random_password" "db_master_password" {
+  length  = 32
+  special = true
+}
+
 module "rds" {
   source = "../../modules/rds"
 
   identifier      = "myapp-staging-db"
   database_name   = "myapp"
   master_username = "postgres"
+  master_password = random_password.db_master_password.result
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.subnets.subnets_by_tier["Database"]
   allowed_cidr_blocks = [
-    "10.0.10.0/24",  # Private subnets where EKS runs
+    "10.0.10.0/24",  # Private subnets where ECS runs
     "10.0.11.0/24"
   ]
 
@@ -127,6 +134,7 @@ module "rds" {
 | allowed_cidr_blocks | List of CIDR blocks allowed to connect to the database | `list(string)` | `[]` | no |
 | database_name | The name of the database to create | `string` | `null` | no |
 | master_username | Username for the master DB user | `string` | `"postgres"` | no |
+| master_password | Password for the master DB user (managed externally) | `string` | n/a | yes |
 | instance_class | The instance type of the RDS instance | `string` | `"db.t3.micro"` | no |
 | engine_version | The engine version to use | `string` | `"15.4"` | no |
 | allocated_storage | The allocated storage in gigabytes | `number` | `20` | no |
@@ -162,7 +170,7 @@ module "rds" {
 - **Encryption**: Storage encryption enabled by default
 - **Network**: Database placed in private subnets, no public access
 - **Access Control**: Security groups restrict access to specified CIDR blocks
-- **Secrets**: Master password stored in AWS Secrets Manager
+- **Secrets**: Master password provided as input (stored externally in Secrets Manager)
 - **Backups**: Automated backups with configurable retention
 - **Protection**: Deletion protection enabled by default
 

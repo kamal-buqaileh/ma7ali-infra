@@ -223,10 +223,17 @@ module "ecs_ec2" {
 ## Security Features
 
 - **KMS Encryption**: EBS volumes encrypted at rest
-- **Security Groups**: Network-level access control
-- **SSM Access**: Secure remote access without SSH
+- **Enhanced Security Groups**: Restrictive egress rules with documented exceptions
+  - HTTPS (443): External API calls (Stripe, SendGrid, etc.)
+  - HTTP (80): Package repositories and updates
+  - DNS (53): Domain name resolution
+  - NTP (123): Time synchronization
+  - VPC Internal: Full TCP communication within VPC CIDR
+- **IMDSv2**: Instance Metadata Service v2 enforced for enhanced security
+- **SSM Access**: Secure remote access without SSH keys
 - **IAM Integration**: Instance profiles with least privilege
-- **VPC Integration**: Private subnet deployment
+- **VPC Integration**: Private subnet deployment only
+- **Minimal User Data**: Only essential ECS cluster configuration
 
 ## Best Practices
 

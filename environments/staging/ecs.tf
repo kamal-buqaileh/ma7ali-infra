@@ -52,9 +52,9 @@ module "ecs_ec2" {
   # Cost-optimized instance configuration
   instance_type    = "t4g.micro" # ARM64 for better price/performance
   ami_type         = "arm64"
-  min_size         = 0 # Scale to zero for cost optimization
-  max_size         = 5 # Limit maximum instances
-  desired_capacity = 1 # Start with one instance
+  min_size         = 1 # Fix capacity to one instance (disable autoscaling)
+  max_size         = 1 # Fix capacity to one instance (disable autoscaling)
+  desired_capacity = 1 # Keep one instance running
 
   # Storage configuration
   volume_size = 30    # Adequate storage
@@ -63,7 +63,7 @@ module "ecs_ec2" {
   # Capacity provider settings
   protect_from_scale_in  = false # Allow aggressive scaling
   target_capacity        = 70    # Lower target for cost savings
-  enable_managed_scaling = true
+  enable_managed_scaling = false # Disable ECS managed scaling
 
   # Security configuration
   alb_security_group_ids = [module.alb.alb_security_group_id]
